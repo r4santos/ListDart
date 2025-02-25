@@ -1,4 +1,4 @@
-<h1 align="center">Dart Introduction Activity</h1>
+<h1 align="center">Dart Exercise List</h1>
 
 
 <p align="center">
