@@ -22,6 +22,7 @@ void main() {
       case "1":
         bool exit = false;
         while (!exit) {
+          print("-" * 40);
           stdout.write("Enter your name: ");
           String? name = stdin.readLineSync();
           People p = People(name!);
@@ -39,6 +40,7 @@ void main() {
             print("Inválid value");
           }
 
+          print("-" * 40);
           p.displayDate();
 
           print("-" * 40);
@@ -58,6 +60,8 @@ void main() {
               break;
           }
         }
+
+        enter();
         break;
       case "2":
         bool exit = false;
@@ -117,20 +121,25 @@ void main() {
               break;
           }
         }
+
+        enter();
         break;
       case "3":
+        print("-" * 40);
         stdout.write("Hi! Enter your name and create your \nnew account: ");
         String? name = stdin.readLineSync();
-        BackAccount b = BackAccount(name!);
+
+        BackAccount b = BackAccount(name);
+
+        print("-" * 40);
+        print("Welcome Sr.(a) $name \n");
+
         stdout.write("Enter your current balance: ");
         String? balance = stdin.readLineSync();
         if (balance != null) {
           try {
             double valueBalance = double.parse(balance);
-            b.deposit(valueBalance);
-
-            print("-" * 40);
-            print("Welcome Sr.(a) $name");
+            b.setBalance = valueBalance;
 
             bool exit = false;
             while (!exit) {
@@ -159,6 +168,7 @@ void main() {
                   b.withDraw(newValue);
                   break;
                 case "3":
+                  print("-" * 40);
                   b.displayDetails();
                   break;
                 case "4":
@@ -172,10 +182,103 @@ void main() {
             print("Erro $e");
           }
         }
+
+        enter();
         break;
       case "4":
+        bool close = false;
+        while (!close) {
+          print("-" * 40);
+          print("Hello! Here you calculate \nyour school average\n");
+          stdout.write("Enter your name: ");
+          String? name = stdin.readLineSync();
+          Student s = Student(name!);
+
+          print(" ");
+          stdout.write("Enter your first note: ");
+          String? n1 = stdin.readLineSync();
+          stdout.write("Enter your second note: ");
+          String? n2 = stdin.readLineSync();
+
+          if (n1 != null && n2 != null) {
+            try {
+              double grade1 = double.parse(n1);
+              double grade2 = double.parse(n2);
+
+              s.setGrade1 = grade1;
+              s.setGrade2 = grade2;
+
+              print("-" * 40);
+              s.displayDetails();
+            } catch (e) {
+              print("Erro $e");
+            }
+          }
+
+          print("-" * 40);
+          print("1 - Restart");
+          print("2 - Exit");
+          stdout.write("=> ");
+          String? choice = stdin.readLineSync();
+          switch (choice) {
+            case "1":
+              print("-" * 40);
+              break;
+            case "2":
+              close = true;
+              break;
+            default:
+              print("Ther is no such value");
+              break;
+          }
+        }
+
+        enter();
         break;
       case "5":
+        bool close = false;
+        while (!close) {
+          print("-" * 40);
+          stdout.write("Enter the product name: ");
+          String? name = stdin.readLineSync();
+
+          Product p = Product(name);
+
+          stdout.write("Enter the product price: ");
+          String x = stdin.readLineSync() ?? "";
+          double price = double.parse(x);
+
+          p.productPrice = price;
+          p.displayDate();
+
+          print("1 - Restart");
+          print("2 - Apply discount to product");
+          print("3 - Exit");
+          stdout.write("=> ");
+          String? choice = stdin.readLineSync();
+          switch (choice) {
+            case "1":
+              print("-" * 40);
+              break;
+            case "2":
+              print("-" * 40);
+              stdout.write("Enter the product name: ");
+              String? name = stdin.readLineSync();
+              stdout.write("Enter the product price: ");
+              String? p = stdin.readLineSync();
+              if (p != null) {
+                double price = double.parse(p);
+              } 
+
+            case "3":
+              close = true;
+            default:
+              print("Ther is no such value");
+              break;
+          }
+        }
+
+        enter();
         break;
       case "6":
         break;
@@ -191,6 +294,7 @@ void main() {
 }
 
 void enter() {
+  stdout.write("Press ENTER to exit");
   stdin.readLineSync();
 }
 
@@ -231,7 +335,9 @@ class Car {
   get getPrice => _price;
 
   void displayDate() {
-    print("Brand: $brand \nModel: $model \nPrice: $_price");
+    print(
+      "Brand: $brand \nModel: $model \nPrice: ${_price.toStringAsFixed(2)}",
+    );
   }
 }
 
@@ -252,7 +358,7 @@ class BackAccount {
   }
 
   void withDraw(double value) {
-    if (value > getBalance) {
+    if (value < getBalance) {
       setBalance = getBalance - value;
     } else {
       print("The desired amount is greater than \nthe available balance");
@@ -260,7 +366,7 @@ class BackAccount {
   }
 
   void displayDetails() {
-    print("Holder Account: $holder \nBalance: $_balance");
+    print("Holder Account: $holder \nBalance: ${_balance.toStringAsFixed(2)}");
   }
 }
 
@@ -297,9 +403,9 @@ class Student {
 
   String checkApproval() {
     if (calculateAverage() >= 7) {
-      return "Aprovado";
+      return "Approved";
     } else {
-      return "Reprovado";
+      return "Reproved";
     }
   }
 
@@ -307,5 +413,26 @@ class Student {
     print(
       "Name: $name \nGrade 1: $_grade1 \nGrade 2: $_grade2 \nAverage: ${calculateAverage()} \nSituation: ${checkApproval()}",
     );
+  }
+}
+
+class Product {
+  late final String? name;
+  late double _price;
+
+  Product(this.name);
+
+  set productPrice(double value) {
+    _price = value;
+  }
+
+  Product.discount(String originalName, double originalPrice, double discount) {
+    name = originalName;
+    _price = originalPrice * (1 + discount / 100);
+  }
+
+  void displayDate() {
+    print("-" * 40);
+    print("Product: $name \nPrice: ${_price.toStringAsFixed(2)}");
   }
 }
