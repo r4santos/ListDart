@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 void main() {
@@ -239,37 +240,44 @@ void main() {
         bool close = false;
         while (!close) {
           print("-" * 40);
-          stdout.write("Enter the product name: ");
-          String? name = stdin.readLineSync();
-
-          Product p = Product(name);
-
-          stdout.write("Enter the product price: ");
-          String x = stdin.readLineSync() ?? "";
-          double price = double.parse(x);
-
-          p.productPrice = price;
-          p.displayDate();
-
-          print("1 - Restart");
-          print("2 - Apply discount to product");
+          print("1 - Add product");
+          print("2 - Add product and a discount to it");
           print("3 - Exit");
           stdout.write("=> ");
           String? choice = stdin.readLineSync();
           switch (choice) {
             case "1":
               print("-" * 40);
+              stdout.write("Enter the product name: ");
+              String? name = stdin.readLineSync();
+
+              Product p = Product(name);
+
+              stdout.write("Enter the product price: ");
+              String x = stdin.readLineSync() ?? "";
+              double price = double.parse(x);
+
+              p.productPrice = price;
+              p.displayDate();
               break;
             case "2":
               print("-" * 40);
               stdout.write("Enter the product name: ");
-              String? name = stdin.readLineSync();
-              stdout.write("Enter the product price: ");
-              String? p = stdin.readLineSync();
-              if (p != null) {
-                double price = double.parse(p);
-              } 
+              String? name = stdin.readLineSync() ?? "";
 
+              stdout.write("Enter the product price: ");
+              String? p = stdin.readLineSync() ?? "";
+              double price = double.parse(p); //AQUI
+
+              stdout.write("Enter the product discount: ");
+              String? d = stdin.readLineSync() ?? "";
+              double discount = double.parse(d);
+
+              Product p1 = Product.discount(name, price, discount);
+
+              p1.displayDate();
+
+              break;
             case "3":
               close = true;
             default:
@@ -281,8 +289,82 @@ void main() {
         enter();
         break;
       case "6":
+        bool close = false;
+        while (!close) {
+          print("-" * 40);
+          stdout.write("Enter the employee´s name: ");
+          String name = stdin.readLineSync() ?? "";
+
+          stdout.write("Enter the employee´s salary: ");
+          String s = stdin.readLineSync() ?? "";
+          double salary = double.parse(s);
+
+          Employee f = Employee(name);
+          f.addSalary = salary;
+
+          print("-" * 40);
+          stdout.write("Enter the porcentage of the salary encrease: ");
+          String e = stdin.readLineSync() ?? "";
+          double encrease = double.parse(e);
+
+          f.increaseSalary(encrease);
+
+          f.displayDate();
+
+          print("-" * 40);
+          print("1 - Restart");
+          print("2 - Exit");
+          stdout.write("=> ");
+          String choice = stdin.readLineSync() ?? "";
+
+          switch (choice) {
+            case "1":
+              break;
+            case "2":
+              close = true;
+              break;
+            default:
+              print("Ther is no such value");
+              break;
+          }
+        }
+
+        enter();
         break;
       case "7":
+        bool close = false;
+         Cadaster c = Cadaster();
+
+        while (!close) {
+         
+
+          print("-" * 40);
+          print("1 - add people");
+          print('2 - List people');
+          print('3 - Exit');
+          stdout.write('=> ');
+
+          String choice = stdin.readLineSync() ?? '';
+          switch (choice) {
+            case '1':
+              print("-" * 40);
+              stdout.write('Enter people´s name: ');
+              String name = stdin.readLineSync() ?? '';
+
+              c.addPeople(name);
+              break;
+            case '2':
+              print('-' * 40);
+              c.listPeople();
+            case '3':
+              close = true;
+              break;
+            default:
+              print("Ther is no such value");
+              break;
+          }
+        }
+
         break;
       case "8":
         infinit = true;
@@ -428,11 +510,44 @@ class Product {
 
   Product.discount(String originalName, double originalPrice, double discount) {
     name = originalName;
-    _price = originalPrice * (1 + discount / 100);
+    _price = originalPrice - originalPrice * (discount / 100);
   }
 
   void displayDate() {
     print("-" * 40);
     print("Product: $name \nPrice: ${_price.toStringAsFixed(2)}");
+  }
+}
+
+class Employee {
+  late final String? name;
+  late double _salary;
+
+  Employee(this.name);
+
+  set addSalary(double value) {
+    _salary = value;
+  }
+
+  get getSalary => _salary;
+
+  void increaseSalary(double porcent) {
+    addSalary = getSalary * (1 + porcent / 100);
+  }
+
+  void displayDate() {
+    print("Employee: $name \nSalary: ${_salary.toStringAsFixed(2)}");
+  }
+}
+
+class Cadaster {
+  List<String> people = [];
+
+  void addPeople(String p) {
+    people.add(p);
+  }
+
+  void listPeople() {
+    print(people);
   }
 }
